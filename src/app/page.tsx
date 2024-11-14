@@ -39,12 +39,18 @@ export default function Home() {
     },
   });
 
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
+
+  interface BeforeInstallPromptEvent extends Event {
+    prompt: () => void;
+    userChoice: Promise<{ outcome: string }>;
+  }
 
   useEffect(() => {
-    const handler = (e: any) => {
+    const handler = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
     window.addEventListener("beforeinstallprompt", handler);
@@ -57,7 +63,7 @@ export default function Home() {
   const handleAddToHomeScreen = () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult: any) => {
+      deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
         if (choiceResult.outcome === "accepted") {
           console.log("User accepted the A2HS prompt");
         } else {
@@ -68,14 +74,14 @@ export default function Home() {
     }
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit() {
     toast.success("Form submitted successfully!");
   }
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen py-10">
+    <main>
       <Image
-        className="dark:invert mb-8"
+        className="dark:invert"
         src="/next.svg"
         alt="Next.js logo"
         width={180}
@@ -85,7 +91,7 @@ export default function Home() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 max-w-lg w-full"
+          className="space-y-8 max-w-3xl mx-auto py-10"
         >
           <FormField
             control={form.control}
