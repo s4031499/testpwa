@@ -79,9 +79,9 @@ export default function Home() {
   }
 
   return (
-    <main>
+    <main className="px-4 sm:px-6 lg:px-8">
       <Image
-        className="dark:invert"
+        className="dark:invert mx-auto"
         src="/next.svg"
         alt="Next.js logo"
         width={180}
@@ -91,7 +91,7 @@ export default function Home() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 max-w-3xl mx-auto py-10"
+          className="space-y-8 max-w-lg mx-auto py-10"
         >
           <FormField
             control={form.control}
@@ -162,7 +162,7 @@ export default function Home() {
         </form>
       </Form>
       {deferredPrompt && (
-        <Button onClick={handleAddToHomeScreen} className="mt-4">
+        <Button onClick={handleAddToHomeScreen} className="mt-4 w-full">
           Add to Home Screen
         </Button>
       )}
