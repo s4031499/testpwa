@@ -1,175 +1,86 @@
-"use client";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { format } from "date-fns";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Bell } from "lucide-react";
 import Image from "next/image";
-import BottomBar from "@/components/BottomBar";
-
-const formSchema = z.object({
-  name_5781219284: z.string(),
-  name_2491363688: z.coerce.date(),
-});
+import { Input } from "@/components/ui/input";
+import { ProjectFilter } from "@/components/project-filter";
+import { ProjectCard } from "@/components/project-card";
+import { BottomNav } from "@/components/bottom-nav";
+const recentProjects = [
+  {
+    name: "Vinhomes Ocean Park",
+    logo: "https://images.unsplash.com/photo-1664575601711-67110e027b9b?w=64&h=64&fit=crop",
+    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800",
+    status: "Mở bán" as const,
+  },
+  {
+    name: "Vinhomes Golden Avenue",
+    logo: "https://images.unsplash.com/photo-1664575601786-b00156752b61?w=64&h=64&fit=crop",
+    image: "https://images.unsplash.com/photo-1531971589569-0d9370cbe1e5?w=800",
+    status: "Chưa mở bán" as const,
+  },
+  {
+    name: "Vinhomes The Empire",
+    logo: "https://images.unsplash.com/photo-1664575601841-64cdb14c7aab?w=64&h=64&fit=crop",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
+    status: "Hết hàng" as const,
+  },
+  {
+    name: "Vinhomes Ocean Park 3",
+    logo: "https://images.unsplash.com/photo-1664575601711-67110e027b9b?w=64&h=64&fit=crop",
+    image: "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?w=800",
+    status: "Mở bán" as const,
+  },
+];
 
 export default function Home() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name_2491363688: new Date(),
-    },
-  });
-
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null);
-
-  interface BeforeInstallPromptEvent extends Event {
-    prompt: () => void;
-    userChoice: Promise<{ outcome: string }>;
-  }
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-    };
-
-    window.addEventListener("beforeinstallprompt", handler);
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handler);
-    };
-  }, []);
-
-  const handleAddToHomeScreen = () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult: { outcome: string }) => {
-        if (choiceResult.outcome === "accepted") {
-          console.log("User accepted the A2HS prompt");
-        } else {
-          console.log("User dismissed the A2HS prompt");
-        }
-        setDeferredPrompt(null);
-      });
-    }
-  };
-
-  function onSubmit() {
-    toast.success("Form submitted successfully!");
-  }
-
   return (
     <>
-      <main className="px-4 sm:px-6 lg:px-8">
-        <Image
-          className="dark:invert mx-auto"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+      {/* Header */}
+      <div className="bg-blue-600 text-white p-4 pb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">Dự án</h1>
+          <button className="p-2">
+            <Bell className="h-6 w-6" />
+          </button>
+        </div>
+        <Input
+          placeholder="Tìm kiếm dự án"
+          className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
         />
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 max-w-lg mx-auto py-10"
-          >
-            <FormField
-              control={form.control}
-              name="name_5781219284"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="shadcn"
-                      type=""
-                      {...field}
-                      className="w-full"
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      </div>
 
-            <FormField
-              control={form.control}
-              name="name_2491363688"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Date of birth</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>
-                    Your date of birth is used to calculate your age.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full">
-              Submit
-            </Button>
-          </form>
-        </Form>
-        {deferredPrompt && (
-          <Button onClick={handleAddToHomeScreen} className="mt-4 w-full">
-            Add to Home Screen
-          </Button>
-        )}
-      </main>
-      <BottomBar />
+      {/* Recent Projects */}
+      <div className="p-4">
+        <h2 className="text-lg font-semibold mb-4">Xem gần đây</h2>
+        <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+          {recentProjects.map((project) => (
+            <div key={project.name} className="flex-shrink-0">
+              <div className="relative w-16 h-16">
+                <Image
+                  src={project.logo}
+                  alt={project.name}
+                  fill
+                  className="rounded-lg object-cover"
+                  sizes="64px"
+                />
+              </div>
+              <p className="text-xs text-center mt-1 w-16 truncate">
+                {project.name}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Project List */}
+      <div className="p-4 pb-24">
+        <h2 className="text-lg font-semibold mb-4">Toàn bộ dự án</h2>
+        <ProjectFilter />
+        <div className="grid gap-4">
+          {recentProjects.map((project) => (
+            <ProjectCard key={project.name} {...project} />
+          ))}
+        </div>
+      </div>
     </>
   );
 }
