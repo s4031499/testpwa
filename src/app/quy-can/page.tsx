@@ -2,8 +2,6 @@ import { Input } from "@/components/ui/input";
 import { Bell } from "lucide-react";
 import React from "react";
 
-type Props = {};
-
 const page = (props: Props) => {
   return (
     <div>
