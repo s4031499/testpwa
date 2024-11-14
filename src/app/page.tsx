@@ -73,9 +73,9 @@ export default function Home() {
   }
 
   return (
-    <main>
+    <main className="flex flex-col items-center justify-center min-h-screen py-10">
       <Image
-        className="dark:invert"
+        className="dark:invert mb-8"
         src="/next.svg"
         alt="Next.js logo"
         width={180}
@@ -85,7 +85,7 @@ export default function Home() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 max-w-3xl mx-auto py-10"
+          className="space-y-8 max-w-lg w-full"
         >
           <FormField
             control={form.control}
