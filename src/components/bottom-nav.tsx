@@ -23,7 +23,7 @@ export function BottomNav() {
           <span className="text-xs mt-1">Quỹ căn</span>
         </Link>
         <Link
-          href="/transactions"
+          href="/giao-dich"
           className="flex flex-col items-center text-gray-600"
         >
           <ScrollText className="h-6 w-6" />
