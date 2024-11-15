@@ -2,6 +2,9 @@ import { Input } from "@/components/ui/input";
 import { Bell } from "lucide-react";
 import React from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type Props = {};
+
 const page = (props: Props) => {
   return (
     <div>
