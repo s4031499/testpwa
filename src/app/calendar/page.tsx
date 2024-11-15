@@ -3,7 +3,22 @@ import { EventCalendar } from "@/components/event-calendar";
 import { EventList } from "@/components/event-list";
 import { BottomNav } from "@/components/bottom-nav";
 
-const events = [
+type EventStatus = "registered" | "completed" | "pending";
+
+interface Event {
+  id: string;
+  title: string;
+  project: {
+    name: string;
+    image: string;
+  };
+  time: string;
+  date: string;
+  type: string;
+  status: EventStatus;
+}
+
+const events: Event[] = [
   {
     id: "1",
     title: 'Hội thảo "Khám phá Melbourne" - Cơ hội vàng dành cho nhà đầu tư',
